@@ -8,9 +8,40 @@ import {
   faUsers,
   faCalendarDay,
   faEllipsisV,
+  faUserDoctor,
 } from "@fortawesome/free-solid-svg-icons";
 
+import StatCard from "../../components/StatCard/StatCard";
+import QuickAction from "../../components/QuickAction/QuickAction";
+
 const Home = () => {
+  const upcomingAppointments = [
+    {
+      id: 1,
+      patient: "Jean-Pierre S.",
+      initiales: "JS",
+      type: "Consultation Générale",
+      heure: "09:30",
+      statut: "Confirmé",
+      statutClass: "status-confirmed",
+      avatarClass: "",
+    },
+    {
+      id: 2,
+      patient: "Marie Laurent",
+      initiales: "ML",
+      type: "Suivi Post-op",
+      heure: "10:15",
+      statut: "En retard",
+      statutClass: "status-late",
+      avatarClass: "danger",
+    },
+  ];
+
+  const handleQuickAction = (actionName) => {
+    console.log(`Quick action triggered : ${actionName}`);
+  };
+
   return (
     <div className="home-container">
       <div className="left-column">
@@ -20,8 +51,8 @@ const Home = () => {
               <span className="hero-subtitle">VUE D'ENSEMBLE</span>
               <h2 className="hero-title">Bienvenue, Dr. Mercier</h2>
               <p className="hero-text">
-                Vous avez 12 rendez-vous prévus aujourd'hui. Votre premier
-                patient arrive dans 15 minutes.
+                Vous avez {upcomingAppointments.length} rendez-vous prévus
+                aujourd'hui. Votre premier patient arrive dans 15 minutes.
               </p>
             </div>
             <button className="hero-btn">Voir le planning</button>
@@ -29,28 +60,24 @@ const Home = () => {
         </div>
 
         <div className="hero-stats-wrapper">
-          {/* Stat Total Patients */}
-          <div className="card stat-card">
-            <div className="stat-header">
-              <FontAwesomeIcon icon={faUsers} className="stat-icon" />
-              <span className="stat-badge">+12%</span>
-            </div>
-            <div>
-              <p className="stat-label">Total Patients</p>
-              <h3 className="stat-value">1,284</h3>
-            </div>
-          </div>
-
-          <div className="card stat-card">
-            <div className="stat-header">
-              <FontAwesomeIcon icon={faCalendarDay} className="stat-icon" />
-              <span className="stat-sublabel">Aujourd'hui</span>
-            </div>
-            <div>
-              <p className="stat-label">Rendez-vous</p>
-              <h3 className="stat-value">24</h3>
-            </div>
-          </div>
+          <StatCard
+            icon={faUsers}
+            badge="+12%"
+            label="Total Patients"
+            value="1,284"
+          />
+          <StatCard
+            icon={faUserDoctor}
+            sublabel="Actifs"
+            label="Médecins"
+            value="42"
+          />
+          <StatCard
+            icon={faCalendarDay}
+            sublabel="Aujourd'hui"
+            label="Rendez-vous"
+            value="24"
+          />
         </div>
 
         <div className="card card-mt">
@@ -71,42 +98,29 @@ const Home = () => {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td className="td-flex">
-                  <span className="avatar-circle">JS</span>
-                  Jean-Pierre S.
-                </td>
-                <td className="text-gray">Consultation Générale</td>
-                <td>09:30</td>
-                <td>
-                  <span className="status-badge status-confirmed">
-                    Confirmé
-                  </span>
-                </td>
-                <td>
-                  <FontAwesomeIcon
-                    icon={faEllipsisV}
-                    className="action-cell-icon"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td className="td-flex">
-                  <span className="avatar-circle danger">ML</span>
-                  Marie Laurent
-                </td>
-                <td className="text-gray">Suivi Post-op</td>
-                <td>10:15</td>
-                <td>
-                  <span className="status-badge status-late">En retard</span>
-                </td>
-                <td>
-                  <FontAwesomeIcon
-                    icon={faEllipsisV}
-                    className="action-cell-icon"
-                  />
-                </td>
-              </tr>
+              {upcomingAppointments.map((rdv) => (
+                <tr key={rdv.id}>
+                  <td className="td-flex">
+                    <span className={`avatar-circle ${rdv.avatarClass}`}>
+                      {rdv.initiales}
+                    </span>
+                    {rdv.patient}
+                  </td>
+                  <td className="text-gray">{rdv.type}</td>
+                  <td>{rdv.heure}</td>
+                  <td>
+                    <span className={`status-badge ${rdv.statutClass}`}>
+                      {rdv.statut}
+                    </span>
+                  </td>
+                  <td>
+                    <FontAwesomeIcon
+                      icon={faEllipsisV}
+                      className="action-cell-icon"
+                    />
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -115,28 +129,28 @@ const Home = () => {
       <div className="right-column">
         <h3 className="section-title">Actions Rapides</h3>
         <div className="quick-actions-grid">
-          <button className="action-btn">
-            <FontAwesomeIcon icon={faUserPlus} className="action-icon" />
-            Nouveau Patient
-          </button>
-          <button className="action-btn">
-            <FontAwesomeIcon icon={faCalendarPlus} className="action-icon" />
-            Planifier
-          </button>
-          <button className="action-btn">
-            <FontAwesomeIcon icon={faVial} className="action-icon" />
-            Résultats Labo
-          </button>
-          <button className="action-btn">
-            <FontAwesomeIcon
-              icon={faFilePrescription}
-              className="action-icon"
-            />
-            Ordonnance
-          </button>
+          <QuickAction
+            icon={faUserPlus}
+            label="Nouveau Patient"
+            onClick={() => handleQuickAction("Nouveau Patient")}
+          />
+          <QuickAction
+            icon={faCalendarPlus}
+            label="Planifier"
+            onClick={() => handleQuickAction("Planifier")}
+          />
+          <QuickAction
+            icon={faVial}
+            label="Résultats Labo"
+            onClick={() => handleQuickAction("Résultats Labo")}
+          />
+          <QuickAction
+            icon={faFilePrescription}
+            label="Ordonnance"
+            onClick={() => handleQuickAction("Ordonnance")}
+          />
         </div>
 
-        {/* Actualités Santé */}
         <div className="card">
           <h3 className="section-title">Actualités Santé</h3>
           <ul className="news-list">
