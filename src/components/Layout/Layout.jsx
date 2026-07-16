@@ -1,29 +1,55 @@
-import useState from "react";
-import { Outlet } from "react-router-dom";
-import Sidebar from "../Sidebar/Sidebar";
-import Navbar from "../Navbar/Navbar";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import "./layout.css";
 
-const Layout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+export default function Layout() {
+  const navigate = useNavigate();
 
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   return (
-    <div className="layout-container">
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+    <div className="app-container">
+      <aside className="sidebar">
+        <div className="sidebar-brand">
+          <h2>HealthCare+</h2>
+        </div>
 
-      <div className="main-wrapper">
-        <Navbar toggleSidebar={toggleSidebar} />
+        <nav className="sidebar-menu">
+          <Link to="/dashboard" className="menu-item">
+            Tableau de bord
+          </Link>
+          <Link to="/patients" className="menu-item">
+            Patients
+          </Link>
+          <Link to="/doctors" className="menu-item">
+            Médecins
+          </Link>
+          <Link to="/appointments" className="menu-item">
+            Rendez-vous
+          </Link>
+          <Link to="/medical-files" className="menu-item">
+            Dossiers Médicaux
+          </Link>
+        </nav>
 
-        <main className="page-content">
+        <div className="sidebar-footer">
+          <button onClick={handleLogout} className="btn-logout">
+            Déconnexion
+          </button>
+        </div>
+      </aside>
+
+      <main className="main-content">
+        <header className="main-header">
+          <h3>Portail Clinique</h3>
+        </header>
+
+        <div className="content-area">
           <Outlet />
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   );
-};
-
-export default Layout;
+}

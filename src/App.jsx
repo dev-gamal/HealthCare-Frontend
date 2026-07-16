@@ -1,42 +1,44 @@
-import { useEffect } from "react";
-import { Routes, Route } from "react-router-dom";
-import Layout from './components/Layout/Layout.jsx';
-import Home from "./pages/Home/Home.jsx";
-import Patients from "./pages/Patients";
-import Doctors from "./pages/Doctors";
-import Appointments from "./pages/Appointments";
-import Files from "./pages/Files";
-import About from "./pages/About";
+import {
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Layout from "./components/Layout/Layout";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import PatientList from "./pages/Patients/PatientList";
+import DoctorList from "./pages/Doctors/DoctorList";
+import Login from "./pages/Login/Login";
+import "./app.css";
 
-import api from './services/api';
+const AppointmentsPlaceholder = () => (
+  <div>
+    <h2>Gestion des Rendez-vous</h2>
+    <p>Page en cours de développement...</p>
+  </div>
+);
+const MedicalFilesPlaceholder = () => (
+  <div>
+    <h2>Gestion des Dossiers Médicaux</h2>
+    <p>Page en cours de développement...</p>
+  </div>
+);
 
-function App() {
-
-  useEffect(() => {
-    const testConnection = async () => {
-      try {
-        console.log("Trying to connect to the API...");
-        const response = await api.get('/doctor'); 
-        console.log("🟢 Success! API response:", response.data);
-      } catch (error) {
-        console.log("🟡 Connection established, but an error was returned:", error.message);
-      }
-    };
-
-    testConnection();
-  }, []);
-
+export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Layout />}></Route>
-      <Route index element={<Home />}></Route>
-      <Route path="/patients" element={<Patients />}></Route>
-      <Route path="/doctors" element={<Doctors />}></Route>
-      <Route path="/appointments" element={<Appointments />}></Route>
-      <Route path="/files" element={<Files />}></Route>
-      <Route path="/about" element={<About />}></Route>
+      <Route path="/login" element={<Login />} />
+
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Navigate to="/dashboard" replace />} />
+
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="patients" element={<PatientList />} />
+        <Route path="doctors" element={<DoctorList />} />
+        <Route path="appointments" element={<AppointmentsPlaceholder />} />
+        <Route path="medical-files" element={<MedicalFilesPlaceholder />} />
+      </Route>
+
+      <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
   );
 }
-
-export default App;
