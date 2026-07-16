@@ -1,0 +1,43 @@
+.dashboard-container {
+    padding: 20px;
+    font-family: sans-serif;
+}
+
+.dashboard-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.stats-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    min-width: 200px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card h3 {
+    margin: 0 0 10px 0;
+    color: #555;
+    font-size: 16px;
+}
+
+.stat-number {
+    margin: 0;
+    font-size: 32px;
+    font-weight: bold;
+    color: #007bff;
+}
+
+.error-text {
+    color: red;
+    font-weight: bold;
+}
