@@ -18,32 +18,32 @@ export default function Layout() {
 
         <nav className="sidebar-menu">
           <Link to="/dashboard" className="menu-item">
-            Tableau de bord
+            Dashboard
           </Link>
           <Link to="/patients" className="menu-item">
             Patients
           </Link>
           <Link to="/doctors" className="menu-item">
-            Médecins
+            Doctors
           </Link>
           <Link to="/appointments" className="menu-item">
-            Rendez-vous
+            Appointments
           </Link>
           <Link to="/medical-files" className="menu-item">
-            Dossiers Médicaux
+            Medical Files
           </Link>
         </nav>
 
         <div className="sidebar-footer">
           <button onClick={handleLogout} className="btn-logout">
-            Déconnexion
+            Logout
           </button>
         </div>
       </aside>
 
       <main className="main-content">
         <header className="main-header">
-          <h3>Portail Clinique</h3>
+          <h3>Clinic Portal</h3>
         </header>
 
         <div className="content-area">

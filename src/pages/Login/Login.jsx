@@ -8,8 +8,8 @@ import "./login.css";
 
 const schema = yup
   .object({
-    username: yup.string().required("Le nom d'utilisateur est requis"),
-    password: yup.string().required("Le mot de passe est requis"),
+    username: yup.string().required("Username is required"),
+    password: yup.string().required("Password is required"),
   })
   .required();
 
@@ -36,13 +36,11 @@ export default function Login() {
 
       navigate("/dashboard");
     } catch (error) {
-      console.error("Erreur de connexion", error);
+      console.error("Error during login", error);
       if (error.response && error.response.status === 401) {
-        setLoginError("Identifiants incorrects. Veuillez réessayer.");
+        setLoginError("Incorrect credentials. Please try again.");
       } else {
-        setLoginError(
-          "Une erreur est survenue lors de la connexion au serveur.",
-        );
+        setLoginError("An error occurred while connecting to the server.");
       }
     }
   };
@@ -51,33 +49,33 @@ export default function Login() {
     <div className="login-page">
       <div className="login-card">
         <h2 className="login-title">HealthCare+</h2>
-        <p className="login-subtitle">Connectez-vous à votre espace</p>
+        <p className="login-subtitle">Connect to your space</p>
 
         {loginError && <div className="api-error">{loginError}</div>}
 
         <form onSubmit={handleSubmit(onSubmit)} className="login-form">
           <div className="form-group">
-            <label>Nom d'utilisateur</label>
+            <label>Username</label>
             <input
               type="text"
               {...register("username")}
-              placeholder="Saisissez votre nom d'utilisateur"
+              placeholder="Enter your username"
             />
             <p className="field-error">{errors.username?.message}</p>
           </div>
 
           <div className="form-group">
-            <label>Mot de passe</label>
+            <label>Password</label>
             <input
               type="password"
               {...register("password")}
-              placeholder="Saisissez votre mot de passe"
+              placeholder="Enter your password"
             />
             <p className="field-error">{errors.password?.message}</p>
           </div>
 
           <button type="submit" className="btn-login">
-            Se connecter
+            Connect
           </button>
         </form>
       </div>

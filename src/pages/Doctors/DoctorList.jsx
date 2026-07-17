@@ -7,19 +7,17 @@ export default function DoctorList() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // États pour gérer l'affichage du formulaire
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [doctorToEdit, setDoctorToEdit] = useState(null);
 
-  // 1. Chargement initial des données
   useEffect(() => {
     const loadInitialDoctors = async () => {
       try {
         const response = await api.get("/doctor?size=100");
         setDoctors(response.data.content);
       } catch (error) {
-        console.error("Erreur lors de la récupération des médecins", error);
-        alert("Impossible de charger les médecins.");
+        console.error("Error loading doctors", error);
+        alert("Impossibble to load doctors. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -28,30 +26,28 @@ export default function DoctorList() {
     loadInitialDoctors();
   }, []);
 
-  // 2. Rafraîchissement silencieux après un ajout/modification
   const refreshDoctors = async () => {
     try {
       const response = await api.get("/doctor?size=100");
       setDoctors(response.data.content);
     } catch (error) {
-      console.error("Erreur lors de la mise à jour de la liste", error);
+      console.error("Error refreshing doctors list", error);
     }
   };
 
   // 3. Suppression (DELETE)
   const handleDelete = async (id) => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce médecin ?")) {
+    if (window.confirm("Are you sure you want to delete this doctor?")) {
       try {
         await api.delete(`/doctor/${id}`);
         setDoctors(doctors.filter((d) => d.id !== id));
       } catch (error) {
-        console.error("Erreur de suppression", error);
-        alert("Erreur lors de la suppression.");
+        console.error("Error deleting doctor", error);
+        alert("Error occurred while deleting the doctor.");
       }
     }
   };
 
-  // 4. Gestion de l'affichage du formulaire
   const handleAddClick = () => {
     setDoctorToEdit(null);
     setIsFormVisible(true);
@@ -67,7 +63,7 @@ export default function DoctorList() {
     refreshDoctors();
   };
 
-  if (loading && doctors.length === 0) return <p>Chargement des médecins...</p>;
+  if (loading && doctors.length === 0) return <p>Loading doctors...</p>;
 
   return (
     <div className="crud-container">
@@ -80,9 +76,9 @@ export default function DoctorList() {
       ) : (
         <>
           <div className="crud-header">
-            <h2>Gestion des Médecins</h2>
+            <h2>Doctor Management</h2>
             <button className="btn-primary" onClick={handleAddClick}>
-              + Ajouter un médecin
+              + Add Doctor
             </button>
           </div>
 
@@ -90,10 +86,10 @@ export default function DoctorList() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Nom</th>
-                <th>Spécialité</th>
+                <th>Name</th>
+                <th>Specialty</th>
                 <th>Email</th>
-                <th>Téléphone</th>
+                <th>Phone</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -111,13 +107,13 @@ export default function DoctorList() {
                         className="btn-edit"
                         onClick={() => handleEditClick(doctor)}
                       >
-                        Modifier
+                        Modify
                       </button>
                       <button
                         className="btn-delete"
                         onClick={() => handleDelete(doctor.id)}
                       >
-                        Supprimer
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -125,7 +121,7 @@ export default function DoctorList() {
               ) : (
                 <tr>
                   <td colSpan="6" style={{ textAlign: "center" }}>
-                    Aucun médecin trouvé.
+                    No doctor found.
                   </td>
                 </tr>
               )}

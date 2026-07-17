@@ -1,0 +1,141 @@
+import { useState, useEffect } from "react";
+import api from "../../services/api";
+import AppointmentForm from "./AppointmentForm";
+import "./appointments.css";
+
+export default function AppointmentList() {
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [appointmentToEdit, setAppointmentToEdit] = useState(null);
+
+  useEffect(() => {
+    const loadInitialAppointments = async () => {
+      try {
+        const response = await api.get("/appointment?size=100");
+        setAppointments(response.data.content);
+      } catch (error) {
+        console.error("Error while fetching appointments", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadInitialAppointments();
+  }, []);
+
+  const refreshAppointments = async () => {
+    try {
+      const response = await api.get("/appointment?size=100");
+      setAppointments(response.data.content);
+    } catch (error) {
+      console.error("Error while updating the list", error);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Cancel and delete this appointment?")) {
+      try {
+        await api.delete(`/appointment/${id}`);
+        setAppointments(appointments.filter((a) => a.id !== id));
+      } catch (error) {
+        console.error("Error while deleting appointment", error);
+        alert("Error while deleting appointment.");
+      }
+    }
+  };
+
+  const handleAddClick = () => {
+    setAppointmentToEdit(null);
+    setIsFormVisible(true);
+  };
+
+  const handleEditClick = (appointment) => {
+    setAppointmentToEdit(appointment);
+    setIsFormVisible(true);
+  };
+
+  const handleFormSuccess = () => {
+    setIsFormVisible(false);
+    refreshAppointments();
+  };
+
+  if (loading && appointments.length === 0)
+    return <p>Loading appointments...</p>;
+
+  return (
+    <div className="crud-container">
+      {isFormVisible ? (
+        <AppointmentForm
+          appointment={appointmentToEdit}
+          onSuccess={handleFormSuccess}
+          onCancel={() => setIsFormVisible(false)}
+        />
+      ) : (
+        <>
+          <div className="crud-header">
+            <h2>Appointments Management</h2>
+            <button className="btn-primary" onClick={handleAddClick}>
+              + New Appointment
+            </button>
+          </div>
+
+          <table className="simple-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Patient (ID)</th>
+                <th>Doctor (ID)</th>
+                <th>Date & Time</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {appointments.length > 0 ? (
+                appointments.map((appointment) => (
+                  <tr key={appointment.id}>
+                    <td>{appointment.id}</td>
+                    <td>{appointment.patientId || "N/A"}</td>
+                    <td>{appointment.doctorId || "N/A"}</td>
+                    <td>
+                      {new Date(appointment.appointmentDate).toLocaleString()}
+                    </td>
+                    <td>
+                      <span
+                        className={`status-badge ${appointment.status?.toLowerCase()}`}
+                      >
+                        {appointment.status}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        className="btn-edit"
+                        onClick={() => handleEditClick(appointment)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn-delete"
+                        onClick={() => handleDelete(appointment.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" style={{ textAlign: "center" }}>
+                    No appointments found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </>
+      )}
+    </div>
+  );
+}

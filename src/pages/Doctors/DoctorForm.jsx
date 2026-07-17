@@ -8,19 +8,19 @@ const schema = yup
   .object({
     username: yup
       .string()
-      .required("Le nom d'utilisateur est requis")
-      .min(3, "Min 3 caractères"),
+      .required("Username is required")
+      .min(3, "Min 3 characters"),
     password: yup
       .string()
-      .required("Le mot de passe est requis")
-      .min(6, "Min 6 caractères"),
-    name: yup.string().required("Le nom du médecin est requis"),
-    specialty: yup.string().required("La spécialité est requise"),
+      .required("Password is required")
+      .min(6, "Min 6 characters"),
+    name: yup.string().required("Name is required"),
+    specialty: yup.string().required("Specialty is required"),
     email: yup
       .string()
-      .email("Format d'email invalide")
-      .required("L'email est requis"),
-    phone: yup.string().required("Le numéro de téléphone est requis"),
+      .email("Invalid email format")
+      .required("Email is required"),
+    phone: yup.string().required("Phone number is required"),
   })
   .required();
 
@@ -61,49 +61,45 @@ export default function DoctorForm({ doctor, onSuccess, onCancel }) {
     try {
       if (isEditMode) {
         await api.put(`/doctor/${doctor.id}`, data);
-        alert("Médecin modifié avec succès !");
+        alert("Doctor updated successfully!");
       } else {
         await api.post("/doctor", data);
-        alert("Médecin ajouté avec succès !");
+        alert("Doctor added successfully!");
       }
       onSuccess();
     } catch (error) {
-      console.error("Erreur de soumission", error);
-      alert(
-        error.response?.data?.message || "Erreur lors de l'enregistrement.",
-      );
+      console.error("Submission error", error);
+      alert(error.response?.data?.message || "Error occurred while saving.");
     }
   };
 
   return (
     <div className="form-container">
-      <h2>
-        {isEditMode ? "Modifier le médecin" : "Ajouter un nouveau médecin"}
-      </h2>
+      <h2>{isEditMode ? "Modify Doctor" : "Add New Doctor"}</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="simple-form">
         <div className="form-group">
-          <label>Nom d'utilisateur</label>
+          <label>Username</label>
           <input {...register("username")} disabled={isEditMode} />
           <p className="error">{errors.username?.message}</p>
         </div>
 
         <div className="form-group">
           <label>
-            Mot de passe {isEditMode && "(Requis pour valider la modification)"}
+            Password {isEditMode && "(Required to validate the modification)"}
           </label>
           <input type="password" {...register("password")} />
           <p className="error">{errors.password?.message}</p>
         </div>
 
         <div className="form-group">
-          <label>Nom Complet (Dr. X)</label>
+          <label>Full Name (Dr. X)</label>
           <input {...register("name")} />
           <p className="error">{errors.name?.message}</p>
         </div>
 
         <div className="form-group">
-          <label>Spécialité (ex: Cardiologue)</label>
+          <label>Specialty (e.g., Cardiologist)</label>
           <input {...register("specialty")} />
           <p className="error">{errors.specialty?.message}</p>
         </div>
@@ -115,17 +111,17 @@ export default function DoctorForm({ doctor, onSuccess, onCancel }) {
         </div>
 
         <div className="form-group">
-          <label>Téléphone</label>
+          <label>Phone</label>
           <input {...register("phone")} />
           <p className="error">{errors.phone?.message}</p>
         </div>
 
         <div className="form-actions">
           <button type="button" className="btn-secondary" onClick={onCancel}>
-            Annuler
+            Cancel
           </button>
           <button type="submit" className="btn-primary" disabled={isSubmitting}>
-            {isSubmitting ? "Sauvegarde..." : "Enregistrer"}
+            {isSubmitting ? "Saving..." : "Save"}
           </button>
         </div>
       </form>

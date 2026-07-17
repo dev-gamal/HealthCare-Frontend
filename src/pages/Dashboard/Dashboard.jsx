@@ -26,8 +26,8 @@ export default function Dashboard() {
                     appointments: appointmentsRes.data.totalElements || 0
                 });
             } catch (err) {
-                console.error("Erreur lors du chargement du dashboard", err);
-                setError("Impossible de charger les statistiques. Vérifiez votre connexion à l'API.");
+                console.error("Error loading dashboard data", err);
+                setError("Impossible to load statistics. Check your API connection.");
             } finally {
                 setLoading(false);
             }
@@ -37,7 +37,7 @@ export default function Dashboard() {
     }, []);
 
     if (loading) {
-        return <div className="dashboard-container"><p>Chargement des données...</p></div>;
+        return <div className="dashboard-container"><p>Loading data...</p></div>;
     }
 
     if (error) {
@@ -46,7 +46,7 @@ export default function Dashboard() {
 
     return (
         <div className="dashboard-container">
-            <h2>Tableau de Bord - Vue d'ensemble</h2>
+            <h2>Dashboard - Overview</h2>
             
             <div className="stats-grid">
                 <div className="stat-card">
@@ -55,12 +55,12 @@ export default function Dashboard() {
                 </div>
                 
                 <div className="stat-card">
-                    <h3>Total Médecins</h3>
+                    <h3>Total Doctors</h3>
                     <p className="stat-number">{stats.doctors}</p>
                 </div>
                 
                 <div className="stat-card">
-                    <h3>Rendez-vous</h3>
+                    <h3>Appointments</h3>
                     <p className="stat-number">{stats.appointments}</p>
                 </div>
             </div>

@@ -6,7 +6,7 @@ const Navbar = () => {
     <header className="navbar">
       <div className="search-bar">
         <FontAwesomeIcon icon={faSearch} />
-        <input type="text" placeholder="Rechercher un patient, un dossier..." />
+        <input type="text" placeholder="Search..." />
       </div>
 
       <div className="navbar-actions">

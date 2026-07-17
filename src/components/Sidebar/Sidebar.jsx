@@ -12,11 +12,11 @@ import {
 
 const Sidebar = () => {
   const navItems = [
-    { path: "/", name: "Tableau de bord", icon: faHouse },
+    { path: "/", name: "Dashboard", icon: faHouse },
     { path: "/patients", name: "Patients", icon: faUsers },
-    { path: "/medecins", name: "Médecins", icon: faUserDoctor },
-    { path: "/rdv", name: "Rendez-vous", icon: faCalendarCheck },
-    { path: "/dossiers", name: "Dossiers médicaux", icon: faFolderOpen },
+    { path: "/doctors", name: "Doctors", icon: faUserDoctor },
+    { path: "/appointments", name: "Appointments", icon: faCalendarCheck },
+    { path: "/medical-records", name: "Medical Records", icon: faFolderOpen },
   ];
 
   return (
@@ -51,7 +51,7 @@ const Sidebar = () => {
           }
         >
           <FontAwesomeIcon icon={faCircleInfo} className="nav-icon" />
-          <span>À propos</span>
+          <span>About</span>
         </NavLink>
       </div>
     </aside>

@@ -16,8 +16,8 @@ export default function PatientList() {
         const response = await api.get("/patient?size=100");
         setPatients(response.data.content);
       } catch (error) {
-        console.error("Erreur lors de la récupération des patients", error);
-        alert("Impossible de charger les patients.");
+        console.error("Error loading patients", error);
+        alert("Impossible to load patients.");
       } finally {
         setLoading(false);
       }
@@ -31,18 +31,18 @@ export default function PatientList() {
       const response = await api.get("/patient?size=100");
       setPatients(response.data.content);
     } catch (error) {
-      console.error("Erreur lors de la mise à jour de la liste", error);
+      console.error("Error updating patients list", error);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce patient ?")) {
+    if (window.confirm("Are you sure you want to delete this patient?")) {
       try {
         await api.delete(`/patient/${id}`);
         setPatients(patients.filter((p) => p.id !== id));
       } catch (error) {
-        console.error("Erreur de suppression", error);
-        alert("Erreur lors de la suppression.");
+        console.error("Error deleting patient", error);
+        alert("Error occurred while deleting the patient.");
       }
     }
   };
@@ -62,7 +62,7 @@ export default function PatientList() {
     refreshPatients();
   };
 
-  if (loading && patients.length === 0) return <p>Chargement...</p>;
+  if (loading && patients.length === 0) return <p>Loading...</p>;
 
   return (
     <div className="crud-container">
@@ -75,9 +75,9 @@ export default function PatientList() {
       ) : (
         <>
           <div className="crud-header">
-            <h2>Gestion des Patients</h2>
+            <h2>Patient Management</h2>
             <button className="btn-primary" onClick={handleAddClick}>
-              + Ajouter un patient
+              + Add Patient
             </button>
           </div>
 
@@ -85,10 +85,10 @@ export default function PatientList() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Nom</th>
-                <th>Prénom</th>
+                <th>Last Name</th>
+                <th>First Name</th>
                 <th>Email</th>
-                <th>Téléphone</th>
+                <th>Phone</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -106,13 +106,13 @@ export default function PatientList() {
                         className="btn-edit"
                         onClick={() => handleEditClick(patient)}
                       >
-                        Modifier
+                        Edit
                       </button>
                       <button
                         className="btn-delete"
                         onClick={() => handleDelete(patient.id)}
                       >
-                        Supprimer
+                        Delete
                       </button>
                     </td>
                   </tr>
@@ -120,7 +120,7 @@ export default function PatientList() {
               ) : (
                 <tr>
                   <td colSpan="6" style={{ textAlign: "center" }}>
-                    Aucun patient trouvé.
+                    No patient found.
                   </td>
                 </tr>
               )}
