@@ -32,6 +32,9 @@ export default function Layout() {
           <Link to="/medical-files" className="menu-item">
             Medical Files
           </Link>
+          <Link to="/about" className="menu-item">
+            About
+          </Link>
         </nav>
 
         <div className="sidebar-footer">

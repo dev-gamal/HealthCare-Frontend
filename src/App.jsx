@@ -6,6 +6,7 @@ import DoctorList from "./pages/Doctors/DoctorList";
 import Login from "./pages/Login/Login";
 import AppointmentList from "./pages/Appointments/AppointmentList";
 import MedicalFileList from "./pages/MedicalFiles/MedicalFileList";
+import About from "./pages/About/About";
 import "./app.css";
 
 
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="doctors" element={<DoctorList />} />
         <Route path="appointments" element={<AppointmentList />} />
         <Route path="medical-files" element={<MedicalFileList />} />
+        <Route path="about" element={<About />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
