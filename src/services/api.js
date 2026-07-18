@@ -10,6 +10,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
+    console.log("Token sending:", token);
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -29,11 +30,15 @@ api.interceptors.response.use(
       switch (error.response.status) {
         case 401:
           console.error("Unauthorized access - perhaps you need to log in?");
+          localStorage.removeItem("token");
+          window.location.href = "/";
           break;
         case 403:
           console.error(
             "Forbidden access - you do not have permission to access this resource.",
           );
+          localStorage.removeItem("token");
+          window.location.href = "/";
           break;
         case 404:
           console.error(
