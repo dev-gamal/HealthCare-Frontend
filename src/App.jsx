@@ -5,14 +5,9 @@ import PatientList from "./pages/Patients/PatientList";
 import DoctorList from "./pages/Doctors/DoctorList";
 import Login from "./pages/Login/Login";
 import AppointmentList from "./pages/Appointments/AppointmentList";
+import MedicalFileList from "./pages/MedicalFiles/MedicalFileList";
 import "./app.css";
 
-const MedicalFilesPlaceholder = () => (
-  <div>
-    <h2>Gestion des Dossiers Médicaux</h2>
-    <p>Page en cours de développement...</p>
-  </div>
-);
 
 export default function App() {
   return (
@@ -26,7 +21,7 @@ export default function App() {
         <Route path="patients" element={<PatientList />} />
         <Route path="doctors" element={<DoctorList />} />
         <Route path="appointments" element={<AppointmentList />} />
-        <Route path="medical-files" element={<MedicalFilesPlaceholder />} />
+        <Route path="medical-files" element={<MedicalFileList />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
