@@ -9,24 +9,35 @@ import MedicalFileList from "./pages/MedicalFiles/MedicalFileList";
 import About from "./pages/About/About";
 import "./app.css";
 
+const ProtectedRoute = ({ children }) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+};
 
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
 
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Navigate to="/dashboard" replace />} />
-
-        <Route path="dashboard" element={<Dashboard />} />
-        <Route path="patients" element={<PatientList />} />
-        <Route path="doctors" element={<DoctorList />} />
-        <Route path="appointments" element={<AppointmentList />} />
-        <Route path="medical-files" element={<MedicalFileList />} />
-        <Route path="about" element={<About />} />
+      <Route
+        element={
+          <ProtectedRoute>
+            <Layout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/patients" element={<PatientList />} />
+        <Route path="/doctors" element={<DoctorList />} />
+        <Route path="/appointments" element={<AppointmentList />} />
+        <Route path="/medical-files" element={<MedicalFileList />} />
+        <Route path="/about" element={<About />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

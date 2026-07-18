@@ -1,9 +1,15 @@
-import api from './api';
+import api from "./api";
 
-export const patientService = {
-  getAll: () => api.get('/patient'),
-  getById: (id) => api.get(`/patient/${id}`),
-  create: (data) => api.post('/patient', data),
-  update: (id, data) => api.put(`/patient/${id}`, data),
-  delete: (id) => api.delete(`/patient/${id}`)
+export const getPatients = async () => {
+  const response = await api.get("/patients");
+  return response.data;
+};
+
+export const getPatientDetails = async (id) => {
+  const response = await api.get(`/patients/${id}`);
+  return response.data;
+};
+
+export const addPatient = async (patientData) => {
+  return await api.post("/patients", patientData);
 };
