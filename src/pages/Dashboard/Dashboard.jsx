@@ -12,18 +12,32 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    const fetchCount = async (endpoint) => {
+      try {
+        const res = await api.get(`/${endpoint}?size=1`);
+        return res.data.totalElements || 0;
+      } catch (err) {
+        // If unauthorized/forbidden, the interceptor will handle redirect
+        if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+          throw err; // Let interceptor handle it
+        }
+        console.warn(`Could not fetch ${endpoint} count`, err);
+        return 0;
+      }
+    };
+
     const fetchDashboardData = async () => {
       try {
-        const [patientsRes, doctorsRes, appointmentsRes] = await Promise.all([
-          api.get("/patient?size=1"),
-          api.get("/doctor?size=1"),
-          api.get("/appointment?size=1"),
+        const [patients, doctors, appointments] = await Promise.allSettled([
+          fetchCount("patient"),
+          fetchCount("doctor"),
+          fetchCount("appointment"),
         ]);
 
         setStats({
-          patients: patientsRes.data.totalElements || 0,
-          doctors: doctorsRes.data.totalElements || 0,
-          appointments: appointmentsRes.data.totalElements || 0,
+          patients: patients.status === "fulfilled" ? patients.value : 0,
+          doctors: doctors.status === "fulfilled" ? doctors.value : 0,
+          appointments: appointments.status === "fulfilled" ? appointments.value : 0,
         });
       } catch (err) {
         console.error("Error loading dashboard data", err);

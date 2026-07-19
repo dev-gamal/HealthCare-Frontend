@@ -147,14 +147,16 @@
     color: white;
 }
 
-.status-badge.scheduled {
-    background-color: #3498db;
+.status-badge.planned {
+    background-color: #f1c40f;
+    color: #222;
 }
 
 .status-badge.completed {
     background-color: #2ecc71;
 }
 
-.status-badge.cancelled {
+.status-badge.cancelled,
+.status-badge.canceled {
     background-color: #e74c3c;
 }

@@ -13,7 +13,7 @@ export default function MedicalFileList() {
   useEffect(() => {
     const loadInitialFiles = async () => {
       try {
-        const response = await api.get("/medical-files?size=100");
+        const response = await api.get("/file?size=100");
         setMedicalFiles(response.data.content);
       } catch (error) {
         console.error("Error while fetching medical files", error);
@@ -28,7 +28,7 @@ export default function MedicalFileList() {
   // 2. Rafraîchissement après modification
   const refreshFiles = async () => {
     try {
-      const response = await api.get("/medical-files?size=100");
+      const response = await api.get("/file?size=100");
       setMedicalFiles(response.data.content);
     } catch (error) {
       console.error("Error while updating the list", error);
@@ -39,7 +39,7 @@ export default function MedicalFileList() {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this medical file?")) {
       try {
-        await api.delete(`/medical-files/${id}`);
+        await api.delete(`/file/${id}`);
         setMedicalFiles(medicalFiles.filter((file) => file.id !== id));
       } catch (error) {
         console.error("Error while deleting the file", error);
@@ -86,10 +86,10 @@ export default function MedicalFileList() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Patient (ID)</th>
-                <th>Doctor (ID)</th>
-                <th>Diagnostic</th>
-                <th>Treatment</th>
+                <th>Patient</th>
+                <th>Diagnosis</th>
+                <th>Observation</th>
+                <th>Created</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -98,10 +98,10 @@ export default function MedicalFileList() {
                 medicalFiles.map((file) => (
                   <tr key={file.id}>
                     <td>{file.id}</td>
-                    <td>{file.patientId || 'N/A'}</td>
-                    <td>{file.doctorId || 'N/A'}</td>
+                    <td>{file.patientCompleteName || `Patient #${file.patientId}`}</td>
                     <td>{file.diagnosis}</td>
-                    <td>{file.treatment}</td>
+                    <td>{file.observation}</td>
+                    <td>{file.creationDate}</td>
                     <td>
                       <button className="btn-edit" onClick={() => handleEditClick(file)}>
                         Edit

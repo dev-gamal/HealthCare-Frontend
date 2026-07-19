@@ -89,9 +89,9 @@ export default function AppointmentForm({ appointment, onSuccess, onCancel }) {
         <div className="form-group">
           <label>Status</label>
           <select {...register("status")}>
-            <option value="SCHEDULED">Planned (PLANNED)</option>
+            <option value="PLANNED">Planned (PLANNED)</option>
             <option value="COMPLETED">Completed (COMPLETED)</option>
-            <option value="CANCELLED">Canceled (CANCELED)</option>
+            <option value="CANCELED">Canceled (CANCELED)</option>
           </select>
           <p className="error">{errors.status?.message}</p>
         </div>

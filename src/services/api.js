@@ -10,7 +10,6 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    console.log("Token sending:", token);
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     }
@@ -37,6 +36,7 @@ api.interceptors.response.use(
           console.error(
             "Forbidden access - you do not have permission to access this resource.",
           );
+          // Token might be expired or invalid - redirect to login
           localStorage.removeItem("token");
           window.location.href = "/";
           break;

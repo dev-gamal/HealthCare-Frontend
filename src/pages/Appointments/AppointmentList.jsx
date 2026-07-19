@@ -85,8 +85,8 @@ export default function AppointmentList() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Patient (ID)</th>
-                <th>Doctor (ID)</th>
+                <th>Patient</th>
+                <th>Doctor</th>
                 <th>Date & Time</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -97,8 +97,8 @@ export default function AppointmentList() {
                 appointments.map((appointment) => (
                   <tr key={appointment.id}>
                     <td>{appointment.id}</td>
-                    <td>{appointment.patientId || "N/A"}</td>
-                    <td>{appointment.doctorId || "N/A"}</td>
+                    <td>{appointment.patientCompleteName || "N/A"}</td>
+                    <td>{appointment.doctorName || "N/A"}</td>
                     <td>
                       {new Date(appointment.appointmentDate).toLocaleString()}
                     </td>

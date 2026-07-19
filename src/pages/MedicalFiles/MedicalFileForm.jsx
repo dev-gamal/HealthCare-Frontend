@@ -6,10 +6,8 @@ import api from "../../services/api";
 
 const schema = yup.object({
   patientId: yup.number().typeError("Patient ID must be a number").required("Required"),
-  doctorId: yup.number().typeError("Doctor ID must be a number").required("Required"),
   diagnosis: yup.string().required("Diagnosis is required"),
-  treatment: yup.string().required("Treatment is required"),
-  notes: yup.string(),
+  observation: yup.string().required("Observation is required"),
 }).required();
 
 export default function MedicalFileForm({ medicalFile, onSuccess, onCancel }) {
@@ -23,7 +21,7 @@ export default function MedicalFileForm({ medicalFile, onSuccess, onCancel }) {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      patientId: "", doctorId: "", diagnosis: "", treatment: "", notes: "",
+      patientId: "", diagnosis: "", observation: "",
     },
   });
 
@@ -31,10 +29,8 @@ export default function MedicalFileForm({ medicalFile, onSuccess, onCancel }) {
     if (medicalFile) {
       reset({
         patientId: medicalFile.patientId || "",
-        doctorId: medicalFile.doctorId || "",
         diagnosis: medicalFile.diagnosis || "",
-        treatment: medicalFile.treatment || "",
-        notes: medicalFile.notes || "",
+        observation: medicalFile.observation || "",
       });
     }
   }, [medicalFile, reset]);
@@ -42,16 +38,16 @@ export default function MedicalFileForm({ medicalFile, onSuccess, onCancel }) {
   const onSubmit = async (data) => {
     try {
       if (isEditMode) {
-        await api.put(`/medical-files/${medicalFile.id}`, data);
+        await api.put(`/file/${medicalFile.id}`, data);
         alert("File updated successfully!");
       } else {
-        await api.post("/medical-files", data);
+        await api.post("/file", data);
         alert("File created successfully!");
       }
       onSuccess();
     } catch (error) {
       console.error("Error submitting the form", error);
-      alert("Error while saving the medical file.");
+      alert(error.response?.data?.message || "Error while saving the medical file.");
     }
   };
 
@@ -62,31 +58,20 @@ export default function MedicalFileForm({ medicalFile, onSuccess, onCancel }) {
       <form onSubmit={handleSubmit(onSubmit)} className="simple-form">
         <div className="form-group">
           <label>Patient ID</label>
-          <input type="number" {...register("patientId")} placeholder="Ex: 1" />
+          <input type="number" {...register("patientId")} placeholder="Ex: 1" disabled={isEditMode} />
           <p className="error">{errors.patientId?.message}</p>
         </div>
 
         <div className="form-group">
-          <label>Doctor ID</label>
-          <input type="number" {...register("doctorId")} placeholder="Ex: 2" />
-          <p className="error">{errors.doctorId?.message}</p>
-        </div>
-
-        <div className="form-group">
-          <label>Diagnostic</label>
+          <label>Diagnosis</label>
           <textarea {...register("diagnosis")} rows="3" placeholder="Description of the diagnosis..."></textarea>
           <p className="error">{errors.diagnosis?.message}</p>
         </div>
 
         <div className="form-group">
-          <label>Treatment</label>
-          <textarea {...register("treatment")} rows="3" placeholder="Details of the treatment..."></textarea>
-          <p className="error">{errors.treatment?.message}</p>
-        </div>
-
-        <div className="form-group">
-          <label>Additional Notes (Optional)</label>
-          <textarea {...register("notes")} rows="2" placeholder="Observations..."></textarea>
+          <label>Observation</label>
+          <textarea {...register("observation")} rows="3" placeholder="Clinical observations..."></textarea>
+          <p className="error">{errors.observation?.message}</p>
         </div>
 
         <div className="form-actions">
