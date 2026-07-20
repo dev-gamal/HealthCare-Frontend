@@ -7,6 +7,7 @@ import Login from "./pages/Login/Login";
 import AppointmentList from "./pages/Appointments/AppointmentList";
 import MedicalFileList from "./pages/MedicalFiles/MedicalFileList";
 import About from "./pages/About/About";
+import { AuthProvider } from "./context/AuthProvider";
 import "./app.css";
 
 const ProtectedRoute = ({ children }) => {
@@ -19,25 +20,27 @@ const ProtectedRoute = ({ children }) => {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Login />} />
 
-      <Route
-        element={
-          <ProtectedRoute>
-            <Layout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/patients" element={<PatientList />} />
-        <Route path="/doctors" element={<DoctorList />} />
-        <Route path="/appointments" element={<AppointmentList />} />
-        <Route path="/medical-files" element={<MedicalFileList />} />
-        <Route path="/about" element={<About />} />
-      </Route>
+        <Route
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/patients" element={<PatientList />} />
+          <Route path="/doctors" element={<DoctorList />} />
+          <Route path="/appointments" element={<AppointmentList />} />
+          <Route path="/medical-files" element={<MedicalFileList />} />
+          <Route path="/about" element={<About />} />
+        </Route>
 
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }
