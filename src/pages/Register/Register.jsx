@@ -7,10 +7,10 @@ import "./register.css";
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: "",
+    username: "",
     email: "",
     password: "",
-    role: "PATIENT",
+    roles: "PATIENT",
   });
 
   const [errors, setErrors] = useState({});
@@ -18,16 +18,16 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .min(3, "The name must be at least 3 characters long")
-      .required("The name is required"),
+    username: Yup.string()
+      .min(3, "The username must be at least 3 characters long")
+      .required("The username is required"),
     email: Yup.string()
       .email("The email format is invalid")
       .required("The email is required"),
     password: Yup.string()
       .min(6, "The password must be at least 6 characters long")
       .required("The password is required"),
-    role: Yup.string()
+    roles: Yup.string()
       .oneOf(["PATIENT", "DOCTOR"], "Invalid role")
       .required("The role is required"),
   });
@@ -56,7 +56,6 @@ const Register = () => {
       });
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
-        // Gérer les erreurs de validation Yup
         const validationErrors = {};
         err.inner.forEach((error) => {
           validationErrors[error.path] = error.message;
@@ -84,17 +83,17 @@ const Register = () => {
 
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-group">
-            <label htmlFor="name">Full Name</label>
+            <label htmlFor="username">Username</label>
             <input
               type="text"
-              id="name"
-              name="name"
-              value={formData.name}
+              id="username"
+              name="username"
+              value={formData.username}
               onChange={handleChange}
-              className={errors.name ? "input-error" : ""}
-              placeholder="Ex: Gamal Badie"
+              className={errors.username ? "input-error" : ""}
+              placeholder="Ex: gamal_badie"
             />
-            {errors.name && <span className="error-text">{errors.name}</span>}
+            {errors.username && <span className="error-text">{errors.username}</span>}
           </div>
 
           <div className="form-group">
@@ -128,18 +127,18 @@ const Register = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="role">Role</label>
+            <label htmlFor="roles">Role</label>
             <select
-              id="role"
-              name="role"
-              value={formData.role}
+              id="roles"
+              name="roles"
+              value={formData.roles}
               onChange={handleChange}
-              className={errors.role ? "input-error" : ""}
+              className={errors.roles ? "input-error" : ""}
             >
               <option value="PATIENT">Patient</option>
               <option value="DOCTOR">Doctor</option>
             </select>
-            {errors.role && <span className="error-text">{errors.role}</span>}
+            {errors.roles && <span className="error-text">{errors.roles}</span>}
           </div>
 
           <button type="submit" disabled={loading} className="btn-submit">

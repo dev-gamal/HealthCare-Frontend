@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import api from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 import "./login.css";
 
 const schema = yup
@@ -15,6 +15,7 @@ const schema = yup
 
 export default function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [loginError, setLoginError] = useState("");
 
   const {
@@ -29,11 +30,7 @@ export default function Login() {
     setLoginError("");
 
     try {
-      const response = await api.post("/auth/login", data);
-
-      const token = response.data.token;
-      localStorage.setItem("token", token);
-
+      await login(data);
       navigate("/dashboard");
     } catch (error) {
       console.error("Error during login", error);
