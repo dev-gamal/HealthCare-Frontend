@@ -10,6 +10,7 @@ import About from "./pages/About/About";
 import { AuthProvider } from "./context/AuthProvider";
 import AuthGuard from "./components/Guards/AuthGuard";
 import RoleGuard from "./components/Guards/RoleGuard";
+import Register from "./pages/Register/Register";
 
 import "./app.css";
 
@@ -17,6 +18,7 @@ export default function App() {
   return (
     <AuthProvider>
       <Routes>
+        <Route path="/register" element={<Register />} />
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Navigate to="/" replace />} />
 
