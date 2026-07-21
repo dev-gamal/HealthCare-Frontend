@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -78,6 +78,12 @@ export default function Login() {
             Connect
           </button>
         </form>
+
+        <div className="login-footer">
+          <p>
+            No account yet ? <Link to="/register">Register</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
