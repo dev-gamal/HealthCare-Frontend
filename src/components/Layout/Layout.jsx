@@ -1,13 +1,9 @@
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import "./layout.css";
 
 export default function Layout() {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
-  };
+  const { user, logout } = useAuth();
 
   return (
     <div className="app-container">
@@ -38,7 +34,7 @@ export default function Layout() {
         </nav>
 
         <div className="sidebar-footer">
-          <button onClick={handleLogout} className="btn-logout">
+          <button onClick={logout} className="btn-logout">
             Logout
           </button>
         </div>
@@ -47,6 +43,14 @@ export default function Layout() {
       <main className="main-content">
         <header className="main-header">
           <h3>Clinic Portal</h3>
+
+          {user && (
+            <div className="user-profile">
+              <span className="user-name">{user.username}</span>
+              <span className="user-separator"> - </span>
+              <span className="user-role">{user.role}</span>
+            </div>
+          )}
         </header>
 
         <div className="content-area">
