@@ -1,0 +1,8 @@
+RUN docker build -t healthcare-frontend .
+
+RUN docker run -d -p 3000:80 --name healthcare-front-app healthcare-frontend
+
+FOR STOPING OR DELETING CONTAINER
+
+RUN docker stop healthcare-front-app
+    docker rm healthcare-front-app
