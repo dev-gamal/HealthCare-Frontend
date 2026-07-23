@@ -7,37 +7,41 @@ import Login from "./pages/Login/Login";
 import AppointmentList from "./pages/Appointments/AppointmentList";
 import MedicalFileList from "./pages/MedicalFiles/MedicalFileList";
 import About from "./pages/About/About";
-import "./app.css";
+import { AuthProvider } from "./context/AuthProvider";
+import AuthGuard from "./components/Guards/AuthGuard";
+import RoleGuard from "./components/Guards/RoleGuard";
+import Register from "./pages/Register/Register";
 
-const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    return <Navigate to="/" replace />;
-  }
-  return children;
-};
+import "./app.css";
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
+    <AuthProvider>
+      <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login />} />
 
-      <Route
-        element={
-          <ProtectedRoute>
-            <Layout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/patients" element={<PatientList />} />
-        <Route path="/doctors" element={<DoctorList />} />
-        <Route path="/appointments" element={<AppointmentList />} />
-        <Route path="/medical-files" element={<MedicalFileList />} />
-        <Route path="/about" element={<About />} />
-      </Route>
+        <Route path="/register" element={<Register />} />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        <Route element={<AuthGuard />}>
+          <Route element={<Layout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/about" element={<About />} />
+
+            <Route element={<RoleGuard allowedRoles={["ADMIN", "DOCTOR"]} />}>
+              <Route path="/patients" element={<PatientList />} />
+              <Route path="/appointments" element={<AppointmentList />} />
+              <Route path="/medical-files" element={<MedicalFileList />} />
+            </Route>
+
+            <Route element={<RoleGuard allowedRoles={["ADMIN"]} />}>
+              <Route path="/doctors" element={<DoctorList />} />
+            </Route>
+          </Route>
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }

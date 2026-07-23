@@ -17,9 +17,8 @@ export default function Dashboard() {
         const res = await api.get(`/${endpoint}?size=1`);
         return res.data.totalElements || 0;
       } catch (err) {
-        // If unauthorized/forbidden, the interceptor will handle redirect
         if (err.response && (err.response.status === 401 || err.response.status === 403)) {
-          throw err; // Let interceptor handle it
+          throw err;
         }
         console.warn(`Could not fetch ${endpoint} count`, err);
         return 0;

@@ -76,11 +76,40 @@
     padding: 15px 30px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     border-bottom: 1px solid #e1e8ed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .main-header h3 {
     margin: 0;
     color: #2c3e50;
+}
+
+.user-profile {
+    background-color: #f8fafc;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #2c3e50;
+    border: 1px solid #e1e8ed;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.user-separator {
+    color: #bdc3c7;
+}
+
+.user-role {
+    font-weight: 700;
+    color: #3498db;
 }
 
 .content-area {
