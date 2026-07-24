@@ -1,23 +1,37 @@
 import { useState, useEffect } from "react";
 import api from "../../services/api";
 import PatientForm from "./PatientForm";
+import ErrorDisplay from "../../components/Errors/ErrorDisplay";
 import "./patients.css";
 
 export default function PatientList() {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorData, setErrorData] = useState({ code: null, message: "" });
 
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [patientToEdit, setPatientToEdit] = useState(null);
+
+  const handleApiError = (error, defaultMessage) => {
+    console.error("API Error:", error);
+    if (error.response) {
+      setErrorData({
+        code: error.response.status,
+        message: error.response.data?.message || defaultMessage,
+      });
+    } else {
+      setErrorData({ code: 503, message: "Cannot connect to the server." });
+    }
+  };
 
   useEffect(() => {
     const loadInitialPatients = async () => {
       try {
         const response = await api.get("/patient?size=100");
         setPatients(response.data.content);
+        setErrorData({ code: null, message: "" });
       } catch (error) {
-        console.error("Error loading patients", error);
-        alert("Impossible to load patients.");
+        handleApiError(error, "Impossible to load patients.");
       } finally {
         setLoading(false);
       }
@@ -30,8 +44,9 @@ export default function PatientList() {
     try {
       const response = await api.get("/patient?size=100");
       setPatients(response.data.content);
+      setErrorData({ code: null, message: "" });
     } catch (error) {
-      console.error("Error updating patients list", error);
+      handleApiError(error, "Error updating patients list");
     }
   };
 
@@ -40,19 +55,21 @@ export default function PatientList() {
       try {
         await api.delete(`/patient/${id}`);
         setPatients(patients.filter((p) => p.id !== id));
+        setErrorData({ code: null, message: "" });
       } catch (error) {
-        console.error("Error deleting patient", error);
-        alert("Error occurred while deleting the patient.");
+        handleApiError(error, "Error occurred while deleting the patient.");
       }
     }
   };
 
   const handleAddClick = () => {
+    setErrorData({ code: null, message: "" });
     setPatientToEdit(null);
     setIsFormVisible(true);
   };
 
   const handleEditClick = (patient) => {
+    setErrorData({ code: null, message: "" });
     setPatientToEdit(patient);
     setIsFormVisible(true);
   };
@@ -66,6 +83,8 @@ export default function PatientList() {
 
   return (
     <div className="crud-container">
+      <ErrorDisplay statusCode={errorData.code} message={errorData.message} />
+
       {isFormVisible ? (
         <PatientForm
           patient={patientToEdit}

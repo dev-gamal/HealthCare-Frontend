@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useAuth } from "../../context/AuthContext";
+import ErrorDisplay from '../../components/Errors/ErrorDisplay';
 import "./login.css";
 
 const schema = yup
@@ -16,7 +17,8 @@ const schema = yup
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
-  const [loginError, setLoginError] = useState("");
+  
+  const [errorData, setErrorData] = useState({ code: null, message: "" });
 
   const {
     register,
@@ -27,17 +29,24 @@ export default function Login() {
   });
 
   const onSubmit = async (data) => {
-    setLoginError("");
+    setErrorData({ code: null, message: "" });
 
     try {
       await login(data);
       navigate("/dashboard");
     } catch (error) {
       console.error("Error during login", error);
-      if (error.response && error.response.status === 401) {
-        setLoginError("Incorrect credentials. Please try again.");
+    
+      if (error.response) {
+        setErrorData({
+          code: error.response.status,
+          message: error.response.data?.message || "Incorrect credentials. Please try again."
+        });
       } else {
-        setLoginError("An error occurred while connecting to the server.");
+        setErrorData({
+          code: 503,
+          message: "An error occurred while connecting to the server."
+        });
       }
     }
   };
@@ -48,7 +57,7 @@ export default function Login() {
         <h2 className="login-title">HealthCare+</h2>
         <p className="login-subtitle">Connect to your space</p>
 
-        {loginError && <div className="api-error">{loginError}</div>}
+        <ErrorDisplay statusCode={errorData.code} message={errorData.message} />
 
         <form onSubmit={handleSubmit(onSubmit)} className="login-form">
           <div className="form-group">

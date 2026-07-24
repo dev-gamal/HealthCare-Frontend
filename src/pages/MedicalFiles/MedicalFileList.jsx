@@ -1,22 +1,37 @@
 import { useState, useEffect } from "react";
 import api from "../../services/api";
 import MedicalFileForm from "./MedicalFileForm";
+import ErrorDisplay from "../../components/Errors/ErrorDisplay";
 import "./medicalFiles.css";
 
 export default function MedicalFileList() {
   const [medicalFiles, setMedicalFiles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorData, setErrorData] = useState({ code: null, message: "" });
 
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [fileToEdit, setFileToEdit] = useState(null);
+
+  const handleApiError = (error, defaultMessage) => {
+    console.error("API Error:", error);
+    if (error.response) {
+      setErrorData({
+        code: error.response.status,
+        message: error.response.data?.message || defaultMessage,
+      });
+    } else {
+      setErrorData({ code: 503, message: "Cannot connect to the server." });
+    }
+  };
 
   useEffect(() => {
     const loadInitialFiles = async () => {
       try {
         const response = await api.get("/file?size=100");
         setMedicalFiles(response.data.content);
+        setErrorData({ code: null, message: "" });
       } catch (error) {
-        console.error("Error while fetching medical files", error);
+        handleApiError(error, "Error while fetching medical files");
       } finally {
         setLoading(false);
       }
@@ -25,35 +40,36 @@ export default function MedicalFileList() {
     loadInitialFiles();
   }, []);
 
-  // 2. Rafraîchissement après modification
   const refreshFiles = async () => {
     try {
       const response = await api.get("/file?size=100");
       setMedicalFiles(response.data.content);
+      setErrorData({ code: null, message: "" });
     } catch (error) {
-      console.error("Error while updating the list", error);
+      handleApiError(error, "Error while updating the list");
     }
   };
 
-  // 3. Suppression (DELETE)
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this medical file?")) {
       try {
         await api.delete(`/file/${id}`);
         setMedicalFiles(medicalFiles.filter((file) => file.id !== id));
+        setErrorData({ code: null, message: "" });
       } catch (error) {
-        console.error("Error while deleting the file", error);
-        alert("Error while deleting the medical file.");
+        handleApiError(error, "Error while deleting the medical file.");
       }
     }
   };
 
   const handleAddClick = () => {
+    setErrorData({ code: null, message: "" });
     setFileToEdit(null);
     setIsFormVisible(true);
   };
 
   const handleEditClick = (file) => {
+    setErrorData({ code: null, message: "" });
     setFileToEdit(file);
     setIsFormVisible(true);
   };
@@ -63,10 +79,13 @@ export default function MedicalFileList() {
     refreshFiles();
   };
 
-  if (loading && medicalFiles.length === 0) return <p>Loading medical files...</p>;
+  if (loading && medicalFiles.length === 0)
+    return <p>Loading medical files...</p>;
 
   return (
     <div className="crud-container">
+      <ErrorDisplay statusCode={errorData.code} message={errorData.message} />
+
       {isFormVisible ? (
         <MedicalFileForm
           medicalFile={fileToEdit}
@@ -98,15 +117,23 @@ export default function MedicalFileList() {
                 medicalFiles.map((file) => (
                   <tr key={file.id}>
                     <td>{file.id}</td>
-                    <td>{file.patientCompleteName || `Patient #${file.patientId}`}</td>
+                    <td>
+                      {file.patientCompleteName || `Patient #${file.patientId}`}
+                    </td>
                     <td>{file.diagnosis}</td>
                     <td>{file.observation}</td>
                     <td>{file.creationDate}</td>
                     <td>
-                      <button className="btn-edit" onClick={() => handleEditClick(file)}>
+                      <button
+                        className="btn-edit"
+                        onClick={() => handleEditClick(file)}
+                      >
                         Edit
                       </button>
-                      <button className="btn-delete" onClick={() => handleDelete(file.id)}>
+                      <button
+                        className="btn-delete"
+                        onClick={() => handleDelete(file.id)}
+                      >
                         Delete
                       </button>
                     </td>

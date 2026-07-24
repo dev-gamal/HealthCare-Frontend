@@ -1,0 +1,63 @@
+.error-display-container {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  border-left: 5px solid;
+  animation: slideIn 0.3s ease-in-out;
+}
+
+.error-icon {
+  font-size: 1.5rem;
+  margin-right: 12px;
+  margin-top: 2px;
+}
+
+.error-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.error-status {
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.error-message {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+
+.error-client {
+  background-color: #fdf5f5;
+  color: #c53030;
+  border-color: #e53e3e;
+}
+
+.error-auth {
+  background-color: #fffaf0;
+  color: #975a16;
+  border-color: #d69e2e;
+}
+
+.error-not-found {
+  background-color: #f7fafc;
+  color: #4a5568;
+  border-color: #718096;
+}
+
+.error-server {
+  background-color: #fff5f5;
+  color: #742a2a;
+  border-color: #9b2c2c;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

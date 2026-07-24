@@ -1,23 +1,37 @@
 import { useState, useEffect } from "react";
 import api from "../../services/api";
 import DoctorForm from "./DoctorForm";
+import ErrorDisplay from "../../components/Errors/ErrorDisplay";
 import "./doctors.css";
 
 export default function DoctorList() {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [errorData, setErrorData] = useState({ code: null, message: "" });
 
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [doctorToEdit, setDoctorToEdit] = useState(null);
+
+  const handleApiError = (error, defaultMessage) => {
+    console.error("API Error:", error);
+    if (error.response) {
+      setErrorData({
+        code: error.response.status,
+        message: error.response.data?.message || defaultMessage,
+      });
+    } else {
+      setErrorData({ code: 503, message: "Cannot connect to the server." });
+    }
+  };
 
   useEffect(() => {
     const loadInitialDoctors = async () => {
       try {
         const response = await api.get("/doctor?size=100");
         setDoctors(response.data.content);
+        setErrorData({ code: null, message: "" });
       } catch (error) {
-        console.error("Error loading doctors", error);
-        alert("Impossibble to load doctors. Please try again later.");
+        handleApiError(error, "Impossible to load doctors. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -30,30 +44,32 @@ export default function DoctorList() {
     try {
       const response = await api.get("/doctor?size=100");
       setDoctors(response.data.content);
+      setErrorData({ code: null, message: "" });
     } catch (error) {
-      console.error("Error refreshing doctors list", error);
+      handleApiError(error, "Error refreshing doctors list");
     }
   };
 
-  // 3. Suppression (DELETE)
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this doctor?")) {
       try {
         await api.delete(`/doctor/${id}`);
         setDoctors(doctors.filter((d) => d.id !== id));
+        setErrorData({ code: null, message: "" });
       } catch (error) {
-        console.error("Error deleting doctor", error);
-        alert("Error occurred while deleting the doctor.");
+        handleApiError(error, "Error occurred while deleting the doctor.");
       }
     }
   };
 
   const handleAddClick = () => {
+    setErrorData({ code: null, message: "" });
     setDoctorToEdit(null);
     setIsFormVisible(true);
   };
 
   const handleEditClick = (doctor) => {
+    setErrorData({ code: null, message: "" });
     setDoctorToEdit(doctor);
     setIsFormVisible(true);
   };
@@ -67,6 +83,8 @@ export default function DoctorList() {
 
   return (
     <div className="crud-container">
+      <ErrorDisplay statusCode={errorData.code} message={errorData.message} />
+
       {isFormVisible ? (
         <DoctorForm
           doctor={doctorToEdit}

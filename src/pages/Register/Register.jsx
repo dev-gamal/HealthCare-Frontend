@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import * as Yup from "yup";
 import api from "../../services/api";
+import ErrorDisplay from "../../components/Errors/ErrorDisplay";
 import "./register.css";
 
 const Register = () => {
@@ -14,7 +15,7 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [serverError, setServerError] = useState("");
+  const [errorData, setErrorData] = useState({ code: null, message: "" });
   const [loading, setLoading] = useState(false);
 
   const validationSchema = Yup.object().shape({
@@ -43,12 +44,11 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setServerError("");
+    setErrorData({ code: null, message: "" });
     setLoading(true);
 
     try {
       await validationSchema.validate(formData, { abortEarly: false });
-
       await api.post("/auth/register", formData);
 
       navigate("/login", {
@@ -62,11 +62,14 @@ const Register = () => {
         });
         setErrors(validationErrors);
       } else if (err.response) {
-        setServerError(
-          err.response.data.message || "An error occurred during registration.",
-        );
+        setErrorData({
+          code: err.response.status,
+          message:
+            err.response.data.message ||
+            "An error occurred during registration.",
+        });
       } else {
-        setServerError("Error connecting to the server.");
+        setErrorData({ code: 503, message: "Error connecting to the server." });
       }
     } finally {
       setLoading(false);
@@ -77,9 +80,8 @@ const Register = () => {
     <div className="register-container">
       <div className="register-card">
         <h2>Create an account</h2>
-        {serverError && (
-          <div className="error-message server-error">{serverError}</div>
-        )}
+
+        <ErrorDisplay statusCode={errorData.code} message={errorData.message} />
 
         <form onSubmit={handleSubmit} className="register-form">
           <div className="form-group">
@@ -93,7 +95,9 @@ const Register = () => {
               className={errors.username ? "input-error" : ""}
               placeholder="Ex: gamal_badie"
             />
-            {errors.username && <span className="error-text">{errors.username}</span>}
+            {errors.username && (
+              <span className="error-text">{errors.username}</span>
+            )}
           </div>
 
           <div className="form-group">
